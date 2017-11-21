@@ -12,6 +12,7 @@ import Firebase
 let DB_BASE = Database.database().reference()
 
 class DataService {
+    
     static let instance = DataService() //Singleton
 
     private var _REF_BASE = DB_BASE
@@ -37,5 +38,28 @@ class DataService {
     //Function to create a Firebase user
     func createDBUser (uid: String, userData: Dictionary<String, Any>) { //uid - unique user ID
         REF_USERS.child(uid).updateChildValues(userData)
+    }
+    
+    func uploadPost(withMessage message: String, forUID uid: String, withGroupKey groupkey: String?, sendComplete: @escaping (_ status: Bool) -> ()) {
+        if groupkey != nil {
+            //send to group ref
+        } else {
+            REF_FEED.childByAutoId().updateChildValues(["content": message, "senderID": uid])
+            sendComplete(true)
+        }
+    }
+    
+    func getAllFeedMessages(handler: @escaping (_ messages: [Message]) -> ()) {
+        var messageArray = [Message]()
+        REF_FEED.observeSingleEvent(of: .value) { (feedMessageSnapshot) in
+            guard let feedMessageSnapshot = feedMessageSnapshot.children.allObjects as? [DataSnapshot] else { return }
+            for message in feedMessageSnapshot {
+                let content = message.childSnapshot(forPath: "content").value as! String
+                let senderID = message.childSnapshot(forPath: "senderID").value as! String
+                let message = Message(content: content, senderID: senderID)
+                messageArray.append(message)
+            }
+            handler(messageArray)
+        }
     }
 }
