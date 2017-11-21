@@ -24,6 +24,11 @@ class CreatePostVC: UIViewController {
 //        textView.bindToKeyboard()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.emailLbl.text = Auth.auth().currentUser?.email
+    }
+    
     @IBAction func sendBtnPressed(_ sender: Any) {
         if textView.text != nil && textView.text != "Say something here..." {
             sendBtn.isEnabled = false //to disable a btn once it was pressed once not to send a few same messages
