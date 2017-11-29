@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+//To create a shadow around a view
 class ShadowView: UIView {
     
     override func awakeFromNib() {

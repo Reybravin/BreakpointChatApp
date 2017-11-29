@@ -73,4 +73,65 @@ class DataService {
             handler(messageArray)
         }
     }
+    
+    func getEmail(forSearchQuery query: String, handler: @escaping (_ emailArray: [String]) -> ()) {
+        var emailArray = [String]()
+        //searches all values
+        REF_USERS.observe(.value) { (userSnapshot) in
+            guard let userSnapshot = userSnapshot.children.allObjects as? [DataSnapshot] else { return }
+            for user in userSnapshot {
+                let email = user.childSnapshot(forPath: "email").value as! String
+                
+                if email.contains(query) == true && email != Auth.auth().currentUser?.email {
+                     emailArray.append(email)
+                }
+            }
+            handler(emailArray)
+        }
+    }
+    
+    func getIds(forUsernames usernames: [String], handler: @escaping (_ uidArray: [String] ) -> ()) {
+        REF_USERS.observeSingleEvent(of: .value) { (userSnapshot) in
+            var idArray = [String]()
+            //pulling users from firebase
+            guard let userSnapshot = userSnapshot.children.allObjects as? [DataSnapshot] else { return }
+            for user in userSnapshot {
+                let email = user.childSnapshot(forPath: "email").value as! String
+                
+                if usernames.contains(email) {
+                    idArray.append(user.key)
+                }
+            }
+            handler(idArray)
+        }
+    }
+    
+    func createGroup(withTitle title: String, andDescription description: String, forUserIds ids: [String], handler: @escaping (_ groupCreated: Bool) -> ()) {
+        REF_GROUPS.childByAutoId().updateChildValues(["title": title, "description": description, "members": ids])
+        handler(true)
+        
+    }
+    //To download groups from firebase
+    func getAllGroups(handler: @escaping (_ groupsAray: [Group]) -> ()) {
+        var groupsArray = [Group]()
+        REF_GROUPS.observeSingleEvent(of: .value) { (groupSnapshot) in
+            guard let groupSnapshot = groupSnapshot.children.allObjects as? [DataSnapshot] else { return }
+            //pulling members in the group from firebase by value of their members key
+            for group in groupSnapshot {
+                let memberArray = group.childSnapshot(forPath: "members").value as! [String]
+                if memberArray.contains((Auth.auth().currentUser?.uid)!) {
+                    let title = group.childSnapshot(forPath: "title").value as! String
+                    let description = group.childSnapshot(forPath: "description").value as! String
+                    let group = Group(title: title, description: description, key: group.key, members: memberArray, membersCount: memberArray.count)
+                    groupsArray.append(group)
+                }
+            }
+            handler(groupsArray)
+        }
+    }
 }
+
+
+
+
+
