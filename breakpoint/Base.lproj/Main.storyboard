@@ -562,7 +562,7 @@
         <!--Group FeedVC-->
         <scene sceneID="UYh-VB-2sG">
             <objects>
-                <viewController id="vhu-J2-MIO" customClass="GroupFeedVC" customModule="breakpoint" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GroupFeedVC" id="vhu-J2-MIO" customClass="GroupFeedVC" customModule="breakpoint" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dlo-t8-IBj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -592,6 +592,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="70" id="FCJ-Cy-VeT"/>
                                     <constraint firstItem="04D-NB-Bw3" firstAttribute="leading" secondItem="mH4-Fa-6MQ" secondAttribute="leading" constant="20" id="O44-mH-PZ2"/>
+                                    <constraint firstItem="04D-NB-Bw3" firstAttribute="top" secondItem="mH4-Fa-6MQ" secondAttribute="top" constant="34" id="S7s-sH-JyC"/>
                                     <constraint firstItem="rzE-Zs-WmH" firstAttribute="centerY" secondItem="04D-NB-Bw3" secondAttribute="centerY" id="cCv-SF-z5P"/>
                                     <constraint firstItem="rzE-Zs-WmH" firstAttribute="centerX" secondItem="mH4-Fa-6MQ" secondAttribute="centerX" id="iOi-rk-Kbg"/>
                                     <constraint firstItem="rzE-Zs-WmH" firstAttribute="top" secondItem="mH4-Fa-6MQ" secondAttribute="top" constant="35" id="j6p-Os-l58"/>
@@ -668,7 +669,7 @@
                                         <color key="backgroundColor" red="0.16078431369999999" green="0.16862745100000001" blue="0.20392156859999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="textColor" red="0.56078431370000004" green="0.81176470590000005" blue="0.30588235289999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" name="Menlo-Regular" family="Menlo" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h6b-wf-yxu">
                                         <rect key="frame" x="330" y="15" width="30" height="30"/>

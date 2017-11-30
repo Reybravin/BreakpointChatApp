@@ -33,6 +33,7 @@ class GroupsVC: UIViewController {
 }
 
 extension GroupsVC: UITableViewDelegate, UITableViewDataSource {
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -47,4 +48,13 @@ extension GroupsVC: UITableViewDelegate, UITableViewDataSource {
         cell.configureCell(title: group.groupTitle, desciption: group.groupDesc, memberCount: group.memberCount)
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let groupFeedVC = storyboard?.instantiateViewController(withIdentifier: "GroupFeedVC") as? GroupFeedVC else { return }
+        groupFeedVC.initData(forGroup: groupsArray[indexPath.row])
+        //using UIViewControllerExt
+        presentDetail(groupFeedVC)
+        //present(groupFeedVC, animated: true, completion: nil)
+    }
+    
 }

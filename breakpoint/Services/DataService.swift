@@ -50,10 +50,11 @@ class DataService {
             }
         }
     }
-    
+    //This func is used in GroupFeedVC
     func uploadPost(withMessage message: String, forUID uid: String, withGroupKey groupkey: String?, sendComplete: @escaping (_ status: Bool) -> ()) {
         if groupkey != nil {
-            //send to group ref
+            REF_GROUPS.child(groupkey!).child("messages").childByAutoId().updateChildValues(["content": message, "senderID": uid]) //firebase will automatically create a folder called "messages" inside a group, each message will have a random id, message content and sender id
+            sendComplete(true)
         } else {
             REF_FEED.childByAutoId().updateChildValues(["content": message, "senderID": uid])
             sendComplete(true)
@@ -64,6 +65,7 @@ class DataService {
         var messageArray = [Message]()
         REF_FEED.observeSingleEvent(of: .value) { (feedMessageSnapshot) in
             guard let feedMessageSnapshot = feedMessageSnapshot.children.allObjects as? [DataSnapshot] else { return }
+            
             for message in feedMessageSnapshot {
                 let content = message.childSnapshot(forPath: "content").value as! String
                 let senderID = message.childSnapshot(forPath: "senderID").value as! String
@@ -71,6 +73,20 @@ class DataService {
                 messageArray.append(message)
             }
             handler(messageArray)
+        }
+    }
+    //used in GroupFeedVC
+    func getAllMessagesFor(desiredGroup: Group, handler: @escaping (_ messagesArray: [Message]) -> ()) {
+        var groupMessageArray = [Message]()
+        REF_GROUPS.child(desiredGroup.key).child("messages").observeSingleEvent(of: .value) { (groupMessageSnapshot) in
+            guard let groupMessageSnapshot = groupMessageSnapshot.children.allObjects as? [DataSnapshot] else { return }
+            for groupMessage in groupMessageSnapshot  {
+                let content = groupMessage.childSnapshot(forPath: "content").value as! String
+                let senderID = groupMessage.childSnapshot(forPath: "senderID").value as! String
+                let groupMessage = Message(content: content, senderID: senderID)
+                groupMessageArray.append(groupMessage)
+            }
+            handler(groupMessageArray)
         }
     }
     
@@ -103,6 +119,20 @@ class DataService {
                 }
             }
             handler(idArray)
+        }
+    }
+    //for GroupFeedVC to view emails of the group members
+    func getEmailsFor(group: Group, handler: @escaping (_ emailArray: [String]) -> ()){
+        var emailArray = [String]()
+        REF_USERS.observeSingleEvent(of: .value) { (userSnapshot) in
+            guard let userSnapshot = userSnapshot.children.allObjects as? [DataSnapshot] else {return}
+            for user in userSnapshot {
+                if group.members.contains(user.key) {
+                    let email = user.childSnapshot(forPath: "email").value as! String
+                    emailArray.append(email)
+                }
+            }
+            handler(emailArray)
         }
     }
     
